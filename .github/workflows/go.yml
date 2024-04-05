@@ -10,7 +10,9 @@ on:
 jobs:
 
   build:
-    runs-on: ubuntu-latest
+    strategy:
+      os: [linux, windows, macos]
+    runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v3
 
@@ -32,8 +34,8 @@ jobs:
       uses: actions/upload-artifact@v4.3.1
       with:
         # Artifact name
-        name: algo_kata-${{github.event.release.tag_name}}
+        name: algo_kata-${{ matrix.os }}-${{github.event.release.tag_name}}
         # A file, directory or wildcard pattern that describes what to upload
         path: |
-          algo_kata
+          ${{ matrix.os == 'windows' && 'algo_kata.exe' || 'algo_kata' }}
           config.toml

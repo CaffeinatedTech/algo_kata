@@ -12,7 +12,7 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [linux, windows, macos]
+        os: [Linux, Windows, macOS]
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v3
@@ -38,5 +38,5 @@ jobs:
         name: algo_kata-${{ matrix.os }}-${{github.event.release.tag_name}}
         # A file, directory or wildcard pattern that describes what to upload
         path: |
-          ${{ matrix.os == 'windows' && 'algo_kata.exe' || 'algo_kata' }}
+          ${{ matrix.os == 'Windows' && 'algo_kata.exe' || 'algo_kata' }}
           config.toml

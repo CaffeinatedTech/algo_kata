@@ -11,7 +11,8 @@ jobs:
 
   build:
     strategy:
-      os: [linux, windows, macos]
+      matrix:
+        os: [linux, windows, macos]
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v3

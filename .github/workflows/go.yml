@@ -1,42 +1,32 @@
-# This workflow will build a golang project
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
-
 name: Go
 
 on:
   release:
-    types: [ published ]
+    types: [ created ]
+
+permissions:
+    contents: write
+    packages: write
 
 jobs:
-
-  build:
+  releases-matrix:
+    name: Release Go Binary
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-    runs-on: ${{ matrix.os }}
+        # build and publish in parallel: linux/386, linux/amd64, linux/arm64, windows/386, windows/amd64, darwin/amd64, darwin/arm64
+        goos: [linux, windows, darwin]
+        goarch: ["386", amd64, arm64]
+        exclude:
+          - goarch: "386"
+            goos: darwin
+          - goarch: arm64
+            goos: windows
     steps:
-    - uses: actions/checkout@v3
-
-    - name: Set up Go
-      uses: actions/setup-go@v4
+    - uses: actions/checkout@v4
+    - uses: wangyoucao577/go-release-action@v1
       with:
-        go-version: '1.22.x'
-    
-    - name: Install dependencies
-      run: go get .
-
-    - name: Build
-      run: go build -v ./...
-
-    - name: Test
-      run: go test -v ./...
-      
-    - name: Upload a Build Artifact
-      uses: actions/upload-artifact@v4.3.1
-      with:
-        # Artifact name
-        name: algo_kata-${{ runner.os }}-${{github.event.release.tag_name}}
-        # A file, directory or wildcard pattern that describes what to upload
-        path: |
-          ${{ runner.os == 'Windows' && 'algo_kata.exe' || 'algo_kata' }}
-          config.toml
+        github_token: ${{ secrets.build_token }}
+        goos: ${{ matrix.goos }}
+        goarch: ${{ matrix.goarch }}
+        extra_files: readme.md config.toml

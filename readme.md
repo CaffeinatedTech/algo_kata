@@ -27,7 +27,7 @@ so we are limited to testing search and sort algorithms on those.
 You can either grab a binary from the releases page, or clone and build the repo.
 
 **Binary Method:**  
-* Download the binary appropriate to your machine from the releases page.
+* Download the binary appropriate to your machine from the [releases page](https://github.com/CaffeinatedTech/algo_kata/releases/latest).
 * Run it
 
 **Build Method:**  

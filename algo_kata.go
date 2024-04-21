@@ -4,6 +4,7 @@ import "fmt"
 import "strconv"
 import "time"
 import "github.com/charmbracelet/bubbles/textinput"
+import "github.com/charmbracelet/bubbles/stopwatch"
 import tea "github.com/charmbracelet/bubbletea"
 
 type Language struct {
@@ -61,7 +62,6 @@ type nextQuestion struct {
   array []int
   expectedResult int
   expectedResultIndex int
-  startTime time.Time
 }
 
 type model struct {
@@ -73,6 +73,7 @@ type model struct {
 	cursor  int
 	num_ti  textinput.Model
   answer_ti textinput.Model
+  stopwatch stopwatch.Model
 }
 
 func (m model) Init() tea.Cmd {
@@ -130,8 +131,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		} else if m.state == INTERMISSION {
       switch msg.String() {
         case "enter":
-          m.nextQuestion.startTime = time.Now()
           m.state = QUESTION
+          return m, m.stopwatch.Start()
       }
     } else if m.state == QUESTION {
       switch msg.String() {
@@ -142,7 +143,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
           if !correct {
             m.lastAnswerCorrect = red("Incorrect")
           }
-          elapsedTime := time.Since(m.nextQuestion.startTime)
+          elapsedTime := m.stopwatch.Elapsed()
           m.results = append(m.results, Result{
             Algorithm: m.nextQuestion.algorithm.Name,
             Language: m.nextQuestion.language,
@@ -159,7 +160,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
             m.answer_ti.SetValue("")
             m.state = INTERMISSION
           }
-
+          return m, tea.Batch(m.stopwatch.Stop(), m.stopwatch.Reset())
       }
     } else if m.state == COMPLETE {
       return m, tea.Quit
@@ -178,11 +179,21 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.num_ti, cmd = m.num_ti.Update(msg)
 		return m, cmd
 	}
-  if m.state == QUESTION {
-    var cmd tea.Cmd
-    m.answer_ti, cmd = m.answer_ti.Update(msg)
-    return m, cmd
+  if m.state == INTERMISSION {
+    // Have to update the stopwatch to carry out the reset after a question.
+    var cmdStopwatch tea.Cmd
+    m.stopwatch, cmdStopwatch = m.stopwatch.Update(msg)
+    return m, cmdStopwatch
   }
+  if m.state == QUESTION {
+    var cmdAnswer tea.Cmd
+    var cmdStopwatch tea.Cmd
+    m.answer_ti, cmdAnswer = m.answer_ti.Update(msg)
+    m.stopwatch, cmdStopwatch = m.stopwatch.Update(msg)
+    return m, tea.Batch(cmdAnswer, cmdStopwatch)
+  }
+  // var cmdStopwatch tea.Cmd
+  // m.stopwatch, cmdStopwatch = m.stopwatch.Update(msg)
 	return m, nil
 }
 
@@ -203,8 +214,9 @@ func (m model) View() string {
   case QUESTION:
     msg := m.questionMessage()
     return fmt.Sprintf(
-      "%s\n\nYour answer: %s\n\n%s",
+      "%s\nTime Taken: %s\n\nYour answer: %s\n\n%s",
       msg,
+      m.stopwatch.View(),
       m.answer_ti.View(),
       "(esc to quit)",
     ) + "\n"
@@ -228,6 +240,7 @@ func main() {
 		cursor: 0,
 		num_ti: num_ti,
     answer_ti: answer_ti,
+    stopwatch: stopwatch.NewWithInterval(time.Second),
 	}
 	p := tea.NewProgram(initialModel)
 	if _, err := p.Run(); err != nil {

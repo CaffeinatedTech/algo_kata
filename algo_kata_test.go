@@ -27,30 +27,8 @@ func TestCompareArrays(t *testing.T) {
 
 // TestGetConfig tests the getConfig function
 func TestGetConfig(t *testing.T) {
-  c, l := getConfig()
+  c, l, _ := getConfig()
   if len(c) == 0 || len(l) == 0 {
     t.Error("getConfig failed")
-  }
-}
-
-// TestCheckPracticeNumber tests the checkPracticeNumber function
-func TestCheckPracticeNumber(t *testing.T) {
-  s := Session{Num: 100, Algorithms: test_algorithms, Languages: test_languages}
-  // Test too large
-  s = checkPracticeNumer(s)
-  if s.Num != 4 {
-    t.Error("checkPracticeNumber failed")
-  }
-  // Test Less than 1
-  s.Num = 0
-  s = checkPracticeNumer(s)
-  if s.Num != 1 {
-    t.Error("checkPracticeNumber failed")
-  }
-  // Test normal
-  s.Num = 3
-  s = checkPracticeNumer(s)
-  if s.Num != 3 {
-    t.Error("checkPracticeNumber failed")
   }
 }

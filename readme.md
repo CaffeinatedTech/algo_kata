@@ -9,12 +9,9 @@ a number, or a json encoded array `[1,2,3,4]`.
 ### Configuration
 You are able to modify the algorithms, and the languages which will be asked
 by editing the config.toml file.
-You may also supply a list of languages from the command line with the
--l -languages parameter which takes a comma separated list
 
-`algo_kata -l Javascript,Go`
-
-This will limit the languages to Javascript, and Go.
+When you run the app, you will be asked which of the supplied languages, and
+algorithms that you wish to be included in your session.
 
 ### Supported Datastructures
 Currently algo_kata supports one dimensional arrays of integers,

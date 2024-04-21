@@ -1,38 +1,51 @@
-# The languages that you want to practice.
-languages = ["Javascript", "PHP", "Python", "Go", "Bash"]
-
-# The algorithms that you want to practice.
-# Each require a name, and type (search, or sort), and an optional sorted field for 
-# search algorithms that require a sorted list.
-# EXAMPLE:
-# [[algorithm]]
-# name = "Binary Search"
-# type = "search"
-# sorted = true # Binary search requires a sorted array
-
+question_count = 2
 
 [[algorithm]]
-name = "Binary Search"
-type = "search"
-sorted = true # Binary search requires a sorted array
+Name = 'Binary Search'
+Type = 'search'
+Sorted = true
+Selected = true
 
 [[algorithm]]
-name = "Linear Search"
-type = "search"
-sorted = false
+Name = 'Linear Search'
+Type = 'search'
+Sorted = false
+Selected = true
 
 [[algorithm]]
-name = "Bubble Sort"
-type = "sort"
-sorted = false
+Name = 'Bubble Sort'
+Type = 'sort'
+Sorted = false
+Selected = true
 
 [[algorithm]]
-name = "Quick Sort"
-type = "sort"
-sorted = false
+Name = 'Quick Sort'
+Type = 'sort'
+Sorted = false
+Selected = true
 
 [[algorithm]]
-name = "Shell Sort"
-type = "sort"
-sorted = false
+Name = 'Shell Sort'
+Type = 'sort'
+Sorted = false
+Selected = false
 
+[[language]]
+Name = 'Javascript'
+Selected = true
+
+[[language]]
+Name = 'PHP'
+Selected = false
+
+[[language]]
+Name = 'Python'
+Selected = true
+
+[[language]]
+Name = 'Go'
+Selected = true
+
+[[language]]
+Name = 'Bash'
+Selected = false
